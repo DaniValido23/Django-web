@@ -1,0 +1,168 @@
+{% extends 'core/base.html' %} 
+
+{% block content %} 
+
+{% load static %}
+
+{% include 'services/menu_services.html' %}
+
+{% for service in service_list %}
+
+<section class="page-section">
+    <div class="container">
+        <div class="product-item">
+            <div class="product-item-title d-flex">
+                <div class="bg-faded p-5 d-flex mr-auto rounded">
+                    <h2 class="section-heading mb-0">
+                        <span class="section-heading-upper">
+                            {{ service.subtitle }}
+                        </span>
+                        <span class="section-heading-lower">{{ service.title }}</span>
+                    </h2>
+                </div>
+            </div>
+            {% if service.image %}
+                <img
+                    class="product-item-img mx-auto d-flex rounded img-fluid mb-3 mb-lg-0"
+                    src="{{ service.image.url }}"
+                    alt=""
+                />
+            {% endif %}
+            <div class="product-item-description d-flex ml-auto flex-column">
+                <div class="bg-faded p-5 rounded d-flex flex-column">
+                    <p class="mb-0">
+                        {{ service.content | safe }}
+                    </p>
+
+                    <a href="{% url 'services:service_detail' service.id %}">Ver más</a>
+
+                    {% if request.user.is_staff %}
+                        <div class="btn-group align-self-end" role="group">
+                            <a class="btn btn-sm btn-secondary" role="button" href="{% url 'services:update' service.id %}">Editar</a>
+                            <button 
+                                type="button" 
+                                class="btn btn-sm btn-danger" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#confirmDelete" 
+                                data-bs-redirect="{% url 'services:delete' service.id %}"
+                                data-bs-servicename="{{ service.title }}"
+                            >
+                                Eliminar
+                            </a>
+                        </div>
+                    {% endif %}
+    
+                    <br />
+
+                    <a class="btn btn-primary" onclick="addToCart({{service.id}});">
+                        Agregar al carrito
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endfor %}
+
+<div class="container mb-5">
+    <nav class="mx-auto">
+        <ul class="pagination pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">
+                        &laquo; 1
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        Prev
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        &laquo; 1
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        Prev
+                    </a>
+                </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">
+                    {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                </span>
+            </li>
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                        Sig
+                    </a>
+                </li> 
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                        {{ page_obj.paginator.num_pages }} &raquo;
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        Sig
+                    </a>
+                </li> 
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">
+                        {{ page_obj.paginator.num_pages }} &raquo;
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+{% if request.user.is_staff %}
+
+<div class="modal fade" id="confirmDelete" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Eliminar servicio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Desea eliminar el servicio <em><span id="servicename"></span></em>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <a id="confirmDeleteButton" class="btn btn-danger" role="button" href="#">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endif %}
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    let confirmationModal = document.getElementById('confirmDelete');
+    confirmationModal.addEventListener('show.bs.modal', ({relatedTarget: source}) => {
+        let serviceName = `"${$(source).attr('data-bs-servicename')}"`;
+        let redirectUrl = $(source).attr('data-bs-redirect');
+
+        $('#servicename').text(serviceName);
+        $('#confirmDeleteButton').attr('href', redirectUrl);
+    });
+</script>
+
+{% endblock %}

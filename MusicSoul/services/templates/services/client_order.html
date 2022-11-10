@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<section class="page-section">
+    <div class="container mb-4" style="background-color: rgba(49, 26, 17, 0.8)">
+        <form id="formOrder" action="" class="px-0 py-2 pb-5" method="POST">
+            {% csrf_token %}
+            <table class="table text-white">
+                {{ form.as_table }}
+            </table>
+            <div class="row mt-1">
+                <div class="col-md-9 mx-auto mb-1">
+                    <div id="button-submit" class="float-right">
+                        <button type="submit" class="btn text-info from-btn mx-1" style="width: 180px;">
+                            <span class="spinner-border spinner border-sm d-none"></span>
+                            <i class="fas fa-paper-plane fa-fw"></i>
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

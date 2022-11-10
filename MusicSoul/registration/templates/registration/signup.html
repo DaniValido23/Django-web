@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+
+{% block styles %}
+<style>
+    label {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="page-section about-heading">
+    <div class="container">
+        <div class="about-heading-content mbtm">
+            <div class="row">
+                <div class="col-xl-9 col-lg-9 mx-auto">
+                    <div class="bg-faded rounded p-5 forced">
+                        <h2 class="section-heading mb-4">
+                            Registro
+                        </h2>
+
+                        <div class="section-content">
+                            <form action="" method="POST">
+                                {% csrf_token %}
+
+                                {{ form.as_p }}
+
+                                <p>
+                                    <input 
+                                        type="submit"
+                                        value="Confirmar"
+                                        class="btn btn-primary btn-block"
+                                    />
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

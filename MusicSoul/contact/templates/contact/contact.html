@@ -1,0 +1,152 @@
+
+{% extends 'core/base.html' %} 
+
+{% block content %} 
+
+{% load static %}
+
+<section class="page-section about-heading">
+    <div class="container">
+        <img
+            class="img-fluid rounded about-heading-img mb-3 mb-lg-0"
+            src="{% static 'core/img/contact.jpg' %}"
+            alt=""
+        />
+        <div class="about-heading-content">
+            <div class="row">
+                <div class="col-xl-9 col-lg-10 mx-auto">
+                    <div class="bg-faded rounded p-5">
+                        <h2 class="section-heading mb-4">
+                            <span class="section-heading-upper">
+                                Envíanos tus dudas
+                            </span>
+                            <span class="section-heading-lower">Contacto</span>
+                        </h2>
+
+                        <form action="" method="POST">
+                            <!-- To avoid CrossScripting-Attacks -->
+                            {% csrf_token %}
+
+                            <!-- {{ form }} -->
+                            
+                            <div class="form-group">
+                                <label>Nombre *</label>
+                                <div class="input-group">
+                                    {{ form.name }}
+                                </div>
+
+                                {{ form.name.errors }}
+                            </div>
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <div class="input-group">
+                                    {{ form.email }}
+                                </div>
+                                
+                                {{ form.email.errors }}
+                            </div>
+                            <div class="form-group">
+                                <label>Mensaje *</label>
+                                <div class="input-group">
+                                    {{ form.content }}
+                                </div>
+
+                                {{ form.content.errors }}
+                            </div>
+
+                            <br />
+                            
+                            <div class="text-center">
+                                <input
+                                    type="submit"
+                                    class="btn btn-primary btn-block py-2"
+                                    value="Enviar"
+                                />
+                            </div>
+                        </form>
+
+                        <br />
+                        <br />
+
+                        <select name="select1" id="select1" class="form-select">
+                            <option value="0" selected>Opciones</option>
+                            <option value="1">Categorías</option>
+                            <option value="2">Dos</option>
+                        </select>
+
+                        <br />
+                        <br />
+
+                        <select name="select2" id="select2" class="form-select">
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script>
+    function csrfSafeMethod(method) {
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    function executeAJAX(obj) {
+        $.ajax({
+            url: "{% url 'contact:executeAJAX' %}",
+            type: 'POST',
+            dataType: 'json',
+            data: obj,
+            beforeSend: (xhr, settings) => {
+                if (!csrfSafeMethod(settings.type) && !settings.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", Cookies.get('csrftoken'));
+                }
+            }
+        }).done((response, status, xhr) => {
+            let $select2 = $('#select2');
+            $select2.empty();
+            
+            if (response['status'] == 'Ok') {
+                let options = response['options'];
+
+                $.each(options, (k, v) => {
+                    $select2.append($('<option>', {
+                        value: k,
+                        text: v
+                    }));
+                });
+            }
+            else {
+                $select2.append($('<option>', {
+                    value: '0',
+                    text: response['status']
+                }));
+            }
+        }).fail(() => {
+            console.log("Error...");
+
+            let $select2 = $('#select2');
+            $select2.empty();
+ 
+            $select2.append($('<option>', {
+                value: '0',
+                text: 'Error...'
+            }));
+        }).always(() => {
+        })
+    }
+
+    $(() => {
+        $('#select1').on('change', ({ currentTarget: self }) => {
+            let value = self.value;
+            executeAJAX({ value });
+        })
+    })
+</script>
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+{% url 'services:create_order' as url_create_order %}
+
+<section class="page-section">
+    <div class="container p-5" style="background-color: rgba(49, 26, 17, 0.8)">
+        <div class="row mt-2">
+            <div class="col-md-9 mx-auto mb-1">
+                <table class="table table-bordered">
+                    <thead class="text-white">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-white">
+                        {% for product in order %}
+                            <tr>
+                                <td>{{ product.title }}</td>
+                                <td style="text-align: right;">{{ product.quantity }}</td>
+                                <td style="text-align: right;">{{ product.price }}</td>
+                                <td style="text-align: right;">{{ product.subtotal }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9 mb-2">
+                <div style="text-align: right;">
+                    <span class="text-white">Total = {{ total }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-1">
+            <div class="col-md-9 mx-auto mb-1">
+                <div id="button-submit" style="text-align: right;">
+                    <a href="{{ url_create_order }}" class="btn text-white from-btn mx-1">
+                        <span class="spinner-border spinner border-sm d-none"></span>
+                        <i class="fas fa-paper-plane fa-fw"></i>
+                        Confirmar pedido
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

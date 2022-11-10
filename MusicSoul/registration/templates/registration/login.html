@@ -1,0 +1,69 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<section class="page-section about-heading">
+    <div class="container">
+        <div class="about-heading-content mbtm">
+            <div class="row">
+                <div class="col-xl-9 col-lg-9 mx-auto">
+                    <div class="bg-faded rounded p-5 forced">
+                        <h2 class="section-heading mb-4">
+                            Autenticación
+                        </h2>
+
+                        <div class="section-content">
+                            <form action="" method="POST">
+                                {% csrf_token %}
+
+                                {% if form.non_fields_errors %}
+                                    <p style="color: red;">
+                                        Credenciales incorrectas.
+                                    </p>
+                                {% endif %}
+
+                                <p>
+                                    <input 
+                                        placeholder="Nombre de usuario"
+                                        class="form-control"
+                                        id="id_user_name"
+                                        name="username" 
+                                        maxlength="254" 
+                                        type="text" 
+                                        autofocus 
+                                        required
+                                    />
+                                </p>
+                                <p>
+                                    <input 
+                                        placeholder="Contraseña"
+                                        class="form-control"
+                                        id="id_password"
+                                        name="password"
+                                        maxlength="254"
+                                        type="password"
+                                        required
+                                    />
+                                </p>
+                                <p>
+                                    <input 
+                                        type="submit"
+                                        value="Acceder"
+                                        class="btn btn-primary btn-block"
+                                    />
+                                </p>
+                                <p>
+                                    <a href="{% url 'password_reset' %}">
+                                        ¿Olvide mi contraseña?
+                                    </a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
